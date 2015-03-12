@@ -12,5 +12,9 @@ module.exports = (account) ->
         cache: "true"
     , (err, res, body) ->
       if callback
-        body = JSON.parse body
+        return callback new Error 'ServerError' if err
+        try
+          body = JSON.parse body
+        catch e
+          return callback new Error 'ServerError'
         callback if body.error then new Error body.error else null
