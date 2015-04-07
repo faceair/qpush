@@ -1,15 +1,12 @@
-request = require "request"
+request = require 'request'
 
-module.exports = (account) ->
-  return (message, callback) ->
-    {name, code} = account
+module.exports = class Qpush
+  constructor: ({@name, @code}) ->
+
+  _push: (form, callback) ->
     request.post
-      url: "https://qpush.me/pusher/push_site/"
-      form:
-        name: name
-        code: code
-        "msg[text]": message
-        cache: "true"
+      url: 'https://qpush.me/pusher/push_site/'
+      form: form
     , (err, res, body) ->
       if callback
         return callback new Error 'ServerError' if err
@@ -17,4 +14,20 @@ module.exports = (account) ->
           body = JSON.parse body
         catch e
           return callback new Error 'ServerError'
-        callback if body.error then new Error body.error else null
+        callback if body and body.error then new Error body.error else null
+
+  text: (message, callback) =>
+    @_push
+      name: @name
+      code: @code
+      "msg[text]": message
+    , callback
+
+  url: (title, url, callback) =>
+    @_push
+      name: @name
+      code: @code
+      'msg[text]': url
+      'msg[type]': 'url'
+      'msg[extra][title]': title
+    , callback

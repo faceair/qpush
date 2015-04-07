@@ -10,14 +10,17 @@ Simply install it through npm
 
 ### Example
 
-    QPush = require("qpush")
-      name: ""   # your push name
-      code: ""   # your push code
+  QPush = require("./index")
 
-    QPush "miao"
+  qpush = new QPush
+    name: ""   # your push name
+    code: ""   # your push code
 
-    QPush "miao", (err) ->
-      throw err if err
+  qpush.text "miao", (err) ->
+    throw err if err
+
+  qpush.url "miao", 'http://faceair.me', (err) ->
+    throw err if err
 
 ### License
 
